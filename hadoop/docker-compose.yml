@@ -1,0 +1,29 @@
+# Mini-cluster Hadoop 3.4 pseudo-distribué (HDFS + YARN) pour la méthode 3.
+# Lancement : docker compose -f hadoop/docker-compose.yml up -d
+services:
+  namenode:
+    image: apache/hadoop:3.4.1
+    hostname: namenode
+    command: ["hdfs", "namenode"]
+    ports:
+      - "127.0.0.1:9870:9870"
+    env_file: ./config
+    environment:
+      ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
+    volumes:
+      - ../data:/donnees:ro
+  datanode:
+    image: apache/hadoop:3.4.1
+    command: ["hdfs", "datanode"]
+    env_file: ./config
+  resourcemanager:
+    image: apache/hadoop:3.4.1
+    hostname: resourcemanager
+    command: ["yarn", "resourcemanager"]
+    ports:
+      - "127.0.0.1:8088:8088"
+    env_file: ./config
+  nodemanager:
+    image: apache/hadoop:3.4.1
+    command: ["yarn", "nodemanager"]
+    env_file: ./config
